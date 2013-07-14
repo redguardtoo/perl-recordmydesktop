@@ -1,0 +1,26 @@
+* perl-recordmydesktop
+perl-recordmydesktop.pl is the frontend for recordMyDesktop screencast tool.
+
+It can convert recorded video into gif.
+
+Why you need it?
+- It is reliable and some bugs in recordmydesktop is worked around
+- It supports tile window manager like i3
+- Lightweight. You don't need install GTK or QT to run this application
+- Simple and friendly UI.
+- The performance is good because all the temporary files is processed in memory.
+
+* Requirements
+ - recordmydesktop
+ - xwininfo
+ - mplayer (OPTIONAL if you do NO gif conversion)
+ - imagemagick (OPTIONAL if you do NO gif conversion)
+ - notify-send (OPTIONAL)
+* Install
+No installation needed. You can place perl-recordmydesktop.pl anywhere.
+* Usage
+- step 1: Run perl-recordmydesktop.pl
+- step 2: Click the window to be captured for screencast
+- step 3: Done. Wait for the notification from the program
+* Contact me
+You can report bugs at [[https://github.com/redguardtoo/perl-recordmydesktop]]. My email is <chenbin.sh@gmail.com>.
