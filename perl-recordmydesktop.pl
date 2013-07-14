@@ -103,15 +103,17 @@ sub query_window_info {
         } elsif ($_ =~ /Absolute upper-left X: +([0-9]+)/){
             #recordmydesktop don't accept the 0 for origin
             if ($1 eq "0"){
-                $1="1";
+                $result{"offset_x"}="1";
+            } else {
+                $result{"offset_x"}=$1;
             }
-            $result{"offset_x"}=$1;
         } elsif ($_ =~ /Absolute upper-left Y: +([0-9]+)/){
             #recordmydesktop don't accept the 0 for origin
             if ($1 eq "0"){
-                $1="1";
+                $result{"offset_y"}="1";
+            } else {
+                $result{"offset_y"}=$1;
             }
-            $result{"offset_y"}=$1;
         }
     }
     return \%result;
