@@ -77,9 +77,8 @@ sub notify_user {
     if($notify_send_exist) {
         pp "msg=$msg";
         system('notify-send -t 1500 "'.$msg.'"');
-    } else {
-        print "$msg\n";
     }
+    print "$msg\n";
 }
 
 sub query_window_info {
@@ -129,7 +128,7 @@ my $wininfo=query_window_info();
 system("mkdir -p $volatile_dir;rm $volatile_dir/*");
 # my $screencast_cmd="mkdir -p $output_dir;recordmydesktop --overwrite --no-sound -o $output_dir/out.ogv --windowid $wininfo->{'id'}";
 my $screencast_cmd="mkdir -p $output_dir;recordmydesktop --width $wininfo->{'width'} --height $wininfo->{'height'} -x $wininfo->{'offset_x'} -y $wininfo->{'offset_y'} --overwrite --no-sound -o $volatile_dir/out.ogv ";
-pp "screencast_cmd=$screencast_cmd";
+notify_user("command to convert screencast to video: $screencast_cmd");
 pp "wininfo=$wininfo";
 
 
