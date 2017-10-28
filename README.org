@@ -13,17 +13,16 @@ Why you need it?
 * Requirements
  - recordmydesktop
  - xwininfo
- - mplayer (OPTIONAL if you do NO gif conversion)
- - imagemagick (OPTIONAL if you do NO gif conversion)
+ - ffmpeg (OPTIONAL if GIF is output)
  - notify-send (OPTIONAL)
 * Install
 No installation needed. You can place perl-recordmydesktop.pl anywhere.
 * Usage
 - step 1: Run perl-recordmydesktop.pl
 - step 2: Click the window to be captured for screencast
-- step 3: Done. Wait for the notification from the program
+- step 3: Press Ctrl-Alt-S and Done. Wait for the notification from the program
 * Live demo
 The demo is actually a GIF file recorded by this program.
 [[https://github.com/redguardtoo/perl-recordmydesktop/raw/master/screencast.gif]]
-* Contact me
-You can report bugs at [[https://github.com/redguardtoo/perl-recordmydesktop]]. My email is <chenbin.sh@gmail.com>.
+* Report bug
+See [[https://github.com/redguardtoo/perl-recordmydesktop]].

@@ -3,7 +3,7 @@
 ########################################################################
 # perl-recordmydesktop.pl ---
 
-# Copyright (C) 2013  Chen Bin
+# Copyright (C) 2013-2017 Chen Bin
 
 # Author:  Chen Bin <chenbin.sh AT gmail DOT com>
 
@@ -33,14 +33,13 @@
 # USAGE:
 # step 1: Run perl-recordmydesktop.pl
 # step 2: Click the window to be captured for screencast
-# step 3: Done. Wait for the notification from the program
+# step 3: Press Ctrl-Alt-S and Done. Wait for the notification from the program
 # See http://askubuntu.com/questions/107726/how-to-create-animated-gif-images-of-a-screencast for original idea
 
 # REQUIREMENTS:
 # - recordmydesktop
 # - xwininfo
-# - mplayer (OPTIONAL if you do NO gif conversion)
-# - imagemagick (OPTIONAL if you do NO gif conversion)
+# - ffmpeg (OPTIONAL if NO GIF is output)
 # - notify-send (OPTIONAL)
 
 # BUG REPORT:
@@ -54,9 +53,8 @@
 # we need install notify-send to send notify message. OPTIONAL.
 my $notify_send_exist=-e "/usr/bin/notify-send";
 # we need install mplayer to convert video to gif.
-my $mplayer_exist=-e "/usr/bin/mplayer";
+my $ffmpeg_exist=-e "/usr/bin/ffmpeg";
 # we need install imagemagic to convert video to gif
-my $imagemagick_exist=-e "/usr/bin/convert";
 # where to store temporary files, I use ram disk for performance reason
 my $volatile_dir="/dev/shm/screencast-$ENV{'USER'}";
 # to store final result out.ogv and screencast.gif
@@ -80,6 +78,7 @@ sub notify_user {
     }
     print "$msg\n";
 }
+
 
 sub query_window_info {
     my $wininfo=`xwininfo`;
@@ -138,30 +137,31 @@ for (1..$delay_seconds) {
     sleep 1;
 }
 
-notify_user("screencast begins ...");
 notify_user("press Ctrl-Alt-s to finish!");
+for (1..$delay_seconds) {
+    notify_user($delay_seconds-$_+1);
+    sleep 1;
+}
+system('notify-send -t 1 "screencast begins ..."');
+# sleep another a few seconds to make sure the notificaion message is gone
+sleep 3;
 if(system($screencast_cmd)!=0){
     pp "screencast_cmd failed!";
     exit 1;
 }
-if( $mplayer_exist && $imagemagick_exist){
+if( $ffmpeg_exist){
 
     # put the file in memory
-    notify_user("converting video to seperate images ...");
-    system("mplayer -ao null $volatile_dir/out.ogv -vo png:outdir=$volatile_dir");
+    notify_user("Preparing palette ...");
+    system("ffmpeg -i $volatile_dir/out.ogv -vf fps=15,palettegen $volatile_dir/tmp_palette.png");
 
-    notify_user("converting seperate images to gif ...");
-    system("convert $volatile_dir/*.png $volatile_dir/screencast.gif");
+    notify_user("Producing GIF ...");
+    system("ffmpeg -i $volatile_dir/out.ogv -i $volatile_dir/tmp_palette.png -loop 0 -filter_complex 'fps=15,scale=-1:-1:flags=lanczos[x];[x][1:v]paletteuse' $output_dir/screencast.gif");
+    system("mv $volatile_dir/out.ogv $output_dir/out.ogv");
 
-    notify_user("optimizing gif ...");
-    system("mogrify -fuzz 10% -layers Optimize $volatile_dir/screencast.gif");
-
-    system("mv $volatile_dir/out.ogv $volatile_dir/screencast.gif $output_dir/");
     notify_user("DONE! out.ogv and screencast.gif saved in $output_dir");
 
 } else {
     system("mv $volatile_dir/out.ogv $output_dir/out.ogv");
     notify_user("screencast saved into $output_dir/out.ogv");
 }
-# cleaning
-system("rm $volatile_dir/*.png")
